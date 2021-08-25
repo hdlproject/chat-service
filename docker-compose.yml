@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  ejabberd:
+    image: ejabberd/ecs:21.04
+    container_name: ejabberd
+    volumes:
+      - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
+      - ejabberd-database:/home/ejabberd/database
+      - ejabberd-logs:/home/ejabberd/logs
+      - ejabberd-upload:/home/ejabberd/upload
+    ports:
+      - 5222:5222
+      - 5269:5269
+      - 5443:5443
+      - 5280:5280
+      - 1883:1883
+    networks:
+      - ejabberd
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.6
+    container_name: mysql
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - ejabberd
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    env_file:
+      - .env
+
+volumes:
+  ejabberd-database:
+    driver: local
+  ejabberd-logs:
+    driver: local
+  ejabberd-upload:
+    driver: local
+  mysql-data:
+    driver: local
+
+networks:
+  ejabberd:
+    driver: bridge
