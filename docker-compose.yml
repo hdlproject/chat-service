@@ -2,7 +2,8 @@ version: "3.9"
 
 services:
   ejabberd:
-    image: ejabberd/ecs:21.04
+    image: ejabberd/ecs:latest
+    platform: linux/x86_64
     container_name: ejabberd
     volumes:
       - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
@@ -12,28 +13,27 @@ services:
     ports:
       - 5222:5222
       - 5269:5269
-      - 5443:5443
       - 5280:5280
+      - 5443:5443
       - 1883:1883
     networks:
       - ejabberd
     depends_on:
-      - mysql
+      - postgres
 
-  mysql:
-    image: mysql:5.6
-    container_name: mysql
+  postgres:
+    image: postgres:latest
+    container_name: postgres
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     ports:
-      - 3306:3306
+      - 5432:5432
     networks:
       - ejabberd
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
 
@@ -44,7 +44,7 @@ volumes:
     driver: local
   ejabberd-upload:
     driver: local
-  mysql-data:
+  postgres-data:
     driver: local
 
 networks:

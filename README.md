@@ -1,4 +1,6 @@
-# Chat App
+# Ejabberd
+This repository is a proof of concept of Ejabberd. The main use case is a chat service.
+
 ## How to Run
 ```shell script
 $ docker-compose up
@@ -9,3 +11,7 @@ $ docker exec -it ejabberd \
     --password=admin
 
 ```
+
+TODO:
+- Check why the `update_sql_schema` config as well as `ejabberdctl update_sql` command doesn't work
+- 
