@@ -65,6 +65,7 @@ listen:
     module: ejabberd_http
     request_handlers:
       /admin: ejabberd_web_admin
+      /api: mod_http_api
       /.well-known/acme-challenge: ejabberd_acme
   -
     port: 3478
@@ -91,6 +92,9 @@ acl:
     ip:
       - 127.0.0.0/8
       - ::1/128
+  admin:
+    user:
+      - "admin@localhost"
 
 access_rules:
   local:
@@ -122,14 +126,14 @@ api_permissions:
     who:
       access:
         allow:
-          - acl: loopback
           - acl: admin
-      oauth:
-        scope: "ejabberd:admin"
-        access:
-          allow:
-            - acl: loopback
-            - acl: admin
+#          - acl: loopback
+#      oauth:
+#        scope: "ejabberd:admin"
+#        access:
+#          allow:
+#            - acl: loopback
+#            - acl: admin
     what:
       - "*"
       - "!stop"
@@ -178,7 +182,12 @@ modules:
       "Access-Control-Allow-Origin": "https://@HOST@"
       "Access-Control-Allow-Methods": "GET,HEAD,PUT,OPTIONS"
       "Access-Control-Allow-Headers": "Content-Type"
-  mod_last: {}
+#  mod_last:
+#    cache_size: 1000
+#    cache_missed: true
+#    db_type: sql
+#    cache_life_time: 3600000
+#    use_cache: true
   mod_mam:
     ## Mnesia is limited to 2GB, better to use an SQL backend
     ## For small servers SQLite is a good fit and is very easy
@@ -254,3 +263,5 @@ sql_port: 5432
 default_db: sql
 update_sql_schema: true
 new_sql_schema: true
+
+cache_missed: true
